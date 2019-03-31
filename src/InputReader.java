@@ -2,8 +2,8 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class InputReader {
     int headersCount = 0;
@@ -25,9 +25,11 @@ public class InputReader {
 
 
     public void parseDma(){
+        HashMap<Integer,String> headers = new HashMap();
+        headers = parseDmaFmt();
         StringBuilder stringBuilt = new StringBuilder();
 //needs changed to dynamic
-        File mmdDmaFile = new File("C:\\Users\\walla\\IdeaProjects\\Walling_Rader_MMD\\test\\TestInput001\\Input\\mmd_test1.dma");
+        File mmdDmaFile = new File("test/TestInput001/Input/mmd_test.dma");
         stringBuilt = readFile(stringBuilt,mmdDmaFile);
         String dmaText = stringBuilt.toString();
         String[] dmaLines = dmaText.split("\n");
@@ -37,39 +39,65 @@ public class InputReader {
                 throw new ArrayStoreException("Invalid number of parameters");
             }
         }
-        System.out.println(dmaText);
-
+        buildModlules(headers,dmaLines);
     }
 
-    public void parseDmaFmt(){
+    public HashMap<Integer,String> parseDmaFmt(){
         StringBuilder stringBuilt = new StringBuilder();
 //needs changed to dynamic
-        File mmdDmaFmtFile = new File("C:\\Users\\walla\\IdeaProjects\\Walling_Rader_MMD\\test\\TestInput001\\Input\\mmd_test1.dma_fmt");
+        File mmdDmaFmtFile = new File("test/TestInput001/Input/mmd_test1.dma_fmt");
         stringBuilt = readFile(stringBuilt,mmdDmaFmtFile);
         String dmaFmtText = stringBuilt.toString();
         String[] dmaFmtLines = dmaFmtText.split("\n");
         headersCount = dmaFmtLines.length;
-        String[] lines = new String[headersCount];
+        ArrayList<String> normalHeaders = new ArrayList();
+        ArrayList<String> metricHeaders = new ArrayList();
+        ArrayList<String> xmlTagHeaders = new ArrayList();
+        HashMap<Integer,String> headers = new HashMap();
         int i = 0;
         for (String line: dmaFmtLines){
-            if(line.startsWith("METRIC")){
+            if(line.startsWith("METRIC") || line.startsWith("XMLTAG")){
                 try{
                     String[] lineContents = line.split("\\s+");
-                    lines[i]= lineContents[1];
+                    if(lineContents[0].equals("METRIC")){
+                        headers.put(i,lineContents[1].trim());
+                        metricHeaders.add(lineContents[1].trim());
+                    }
+                    else if(lineContents[0].equals("XMLTAG")){
+                        headers.put(i,lineContents[1].trim());
+                        xmlTagHeaders.add(lineContents[1].trim());
+                    }
+                    else {
+                        throw new ArrayStoreException("INVALID XMLTAG or METRIC input");
+                    }
+
                 }
                 catch (Exception ex){
                     System.out.println("Invalid input");
                 }
             }
             else {
-                lines[i]=line.trim();
+                headers.put(i,line.trim());
+                normalHeaders.add(line.trim());
             }
-            System.out.println(lines[i]);
             i++;
         }
+        return headers;
+    }
 
 
-
+    public  void buildModlules(HashMap<Integer,String> headers, String[] moduleLines){
+        for(int i = 0; i<moduleLines.length; i++){
+            Module module = new Module();
+            String[] moduleValues = new String[headersCount];
+            for (String line : moduleLines) {
+                moduleValues = line.split("\\s+");
+                for(int j = 0; j<moduleValues.length; j++){
+                    String valueHeader = headers.get(j);
+                    //module.valueHeader = moduleValues[j];
+                }
+            }
+        }
     }
 }
 
