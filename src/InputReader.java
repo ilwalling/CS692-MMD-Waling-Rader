@@ -24,7 +24,7 @@ public class InputReader {
     }
 
 
-    public void parseDma(){
+    public HashMap<Integer, HashMap<String,String>> parseDma(){
         HashMap<Integer,String> headers = new HashMap();
         headers = parseDmaFmt();
         StringBuilder stringBuilt = new StringBuilder();
@@ -39,7 +39,7 @@ public class InputReader {
                 throw new ArrayStoreException("Invalid number of parameters");
             }
         }
-        buildModlules(headers,dmaLines);
+        return buildModlules(headers,dmaLines);
     }
 
     public HashMap<Integer,String> parseDmaFmt(){
@@ -86,18 +86,18 @@ public class InputReader {
     }
 
 
-    public  void buildModlules(HashMap<Integer,String> headers, String[] moduleLines){
+    public  HashMap<Integer, HashMap<String,String>> buildModlules(HashMap<Integer,String> headers, String[] moduleLines){
+        HashMap<Integer, HashMap<String,String>> modules = new HashMap();
         for(int i = 0; i<moduleLines.length; i++){
-            Module module = new Module();
-            String[] moduleValues = new String[headersCount];
-            for (String line : moduleLines) {
-                moduleValues = line.split("\\s+");
-                for(int j = 0; j<moduleValues.length; j++){
-                    String valueHeader = headers.get(j);
-                    //module.valueHeader = moduleValues[j];
-                }
+            HashMap<String,String> module = new HashMap();
+            String[] moduleValues;
+            moduleValues = moduleLines[i].split("\\s+");
+            for(int j = 0; j<moduleValues.length; j++){
+                module.put(headers.get(j),moduleValues[j]);
             }
+            modules.put(i,module);
         }
+        return modules;
     }
 }
 
