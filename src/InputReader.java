@@ -8,7 +8,7 @@ import java.util.HashMap;
 public class InputReader {
     int headersCount = 0;
 
-    public StringBuilder readFile(StringBuilder builder, File fileName){
+    private StringBuilder readFile(StringBuilder builder, File fileName){
         String st;
         BufferedReader br;
         try {
@@ -25,7 +25,7 @@ public class InputReader {
 
 
     public HashMap<Integer, HashMap<String,String>> parseDma(){
-        HashMap<Integer,String> headers = new HashMap();
+        HashMap<Integer,String> headers;
         headers = parseDmaFmt();
         StringBuilder stringBuilt = new StringBuilder();
 //needs changed to dynamic
@@ -33,21 +33,24 @@ public class InputReader {
         stringBuilt = readFile(stringBuilt,mmdDmaFile);
         String dmaText = stringBuilt.toString();
         String[] dmaLines = dmaText.split("\n");
+        if(dmaLines.length == 0){
+            throw new ArrayStoreException("Invalid number of parameters");
+        }
 //checks to make sure the number of inputs is the same as the number of headers
         for (String line : dmaLines) {
-            if(line.split("\\s+").length != headersCount){
+            if(headersCount != line.split("\\s+").length || headersCount == 0){
                 throw new ArrayStoreException("Invalid number of parameters");
             }
         }
         return buildModlules(headers,dmaLines);
     }
 
-    public HashMap<Integer,String> parseDmaFmt(){
+    private HashMap<Integer,String> parseDmaFmt(){
         StringBuilder stringBuilt = new StringBuilder();
 //needs changed to dynamic
         File mmdDmaFmtFile = new File("test/TestInput001/Input/mmd_test1.dma_fmt");
         stringBuilt = readFile(stringBuilt,mmdDmaFmtFile);
-        String dmaFmtText = stringBuilt.toString();
+        String dmaFmtText = stringBuilt.toString().toUpperCase();
         String[] dmaFmtLines = dmaFmtText.split("\n");
         headersCount = dmaFmtLines.length;
         ArrayList<String> normalHeaders = new ArrayList();
@@ -59,6 +62,9 @@ public class InputReader {
             if(line.startsWith("METRIC") || line.startsWith("XMLTAG")){
                 try{
                     String[] lineContents = line.split("\\s+");
+                    if(lineContents.length > 2){
+                        throw new ArrayStoreException("INVALID XMLTAG or METRIC input");
+                    }
                     if(lineContents[0].equals("METRIC")){
                         headers.put(i,lineContents[1].trim());
                         metricHeaders.add(lineContents[1].trim());
@@ -82,11 +88,13 @@ public class InputReader {
             }
             i++;
         }
+        checkType2(normalHeaders);
+
         return headers;
     }
 
 
-    public  HashMap<Integer, HashMap<String,String>> buildModlules(HashMap<Integer,String> headers, String[] moduleLines){
+    private  HashMap<Integer, HashMap<String,String>> buildModlules(HashMap<Integer,String> headers, String[] moduleLines){
         HashMap<Integer, HashMap<String,String>> modules = new HashMap();
         for(int i = 0; i<moduleLines.length; i++){
             HashMap<String,String> module = new HashMap();
@@ -98,6 +106,12 @@ public class InputReader {
             modules.put(i,module);
         }
         return modules;
+    }
+
+    private void checkType2(ArrayList<String> normalHeaders){
+        if (normalHeaders.contains("TYPE2") && !normalHeaders.contains("TYPE")){
+            throw new ArrayStoreException("INVALID XMLTAG or METRIC input");
+        }
     }
 }
 
