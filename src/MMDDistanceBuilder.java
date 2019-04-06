@@ -27,6 +27,16 @@ public class MMDDistanceBuilder {
                 System.out.println(comparisonLine.differences);
             }
         }
+        for (int i = 0; i<differenceList.size(); i++){
+            ModuleComparison comparison = differenceList.get(i);
+            if (comparison.differences == 0){
+                modules.put(modules.size()+1, modules.get(comparison.module1));
+                //modules.get(modules.size()+1).put("CloneGroup", "1");
+                modules.remove(comparison.module1Index);
+                modules.remove(comparison.module2Index);
+
+            }
+        }
 
     }
 }
