@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -21,22 +22,33 @@ public class MMDDistanceBuilder {
                 comparisonLine.differentMetrics = differentHeadings;
                 differenceList.add(comparisonLine);
 
-                System.out.println("New Comparison");
-                System.out.println(i);
-                System.out.println(j);
-                System.out.println(comparisonLine.differences);
-            }
-        }
-        for (int i = 0; i<differenceList.size(); i++){
-            ModuleComparison comparison = differenceList.get(i);
-            if (comparison.differences == 0){
-                modules.put(modules.size()+1, modules.get(comparison.module1));
-                //modules.get(modules.size()+1).put("CloneGroup", "1");
-                modules.remove(comparison.module1Index);
-                modules.remove(comparison.module2Index);
 
+//                System.out.println("New Comparison");
+//                System.out.println(i + " " + j);
+//                System.out.println(comparisonLine.differences);
             }
         }
+        ArrayList<ModuleComparison> nearestComparisons = new ArrayList();
+        for(int j = 0; j<modules.keySet().size(); j++){
+            HashMap<String,String> emptyModule = new HashMap();
+            ModuleComparison leastDifferenceComparison = new ModuleComparison(emptyModule,-1,emptyModule,-1);
+            leastDifferenceComparison.differences=999;
+            for (int i = 0; i<differenceList.size(); i++){
+                ModuleComparison comparison = differenceList.get(i);
+                if ((comparison.module1Index == j || comparison.module2Index == j) && (comparison.differences < leastDifferenceComparison.differences)){
+                    leastDifferenceComparison = comparison;
+                    leastDifferenceComparison.differences = comparison.differences;
+//                modules.put(modules.size()+1, modules.get(comparison.module1));
+//                modules.get(modules.size()+1).put("CloneGroup", "1");
+//                modules.remove(comparison.module1Index);
+//                modules.remove(comparison.module2Index);
+
+                }
+            }
+            nearestComparisons.add(leastDifferenceComparison);
+            System.out.println(leastDifferenceComparison.module1Index + " " + leastDifferenceComparison.module2Index + ": " + leastDifferenceComparison.differences);
+        }
+
 
     }
 }
