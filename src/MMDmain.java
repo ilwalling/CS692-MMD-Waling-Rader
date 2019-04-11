@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MMDmain {
@@ -5,7 +6,7 @@ public class MMDmain {
         InputReader reader = new InputReader();
         HashMap<Integer, HashMap<String,String>> modules = reader.parseDma();
         MMDDistanceBuilder distanceBuilder = new MMDDistanceBuilder();
-        distanceBuilder.buildDistanceMapping(modules,reader.normalHeaders);
+        ArrayList<ArrayList> nearestNeighbors = distanceBuilder.calculateDistance(modules,reader.normalHeaders);
 
 
 
