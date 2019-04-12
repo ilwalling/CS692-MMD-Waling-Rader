@@ -2,12 +2,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MMDDistanceBuilder {
-    public ArrayList<ArrayList> calculateDistance(HashMap<Integer, HashMap<String,String>> modules, ArrayList<String> normalHeaders){
+    public HashMap<Integer,ArrayList<ModuleComparison>> calculateDistance(HashMap<Integer, HashMap<String,String>> modules, ArrayList<String> normalHeaders, Integer sizeIncrease){
         //ONLY check on metrics and XML tags NOT regular tags
 //Calculates differences between EVERY module
         ArrayList<ModuleComparison> differenceList = new ArrayList();
-        for( int i = 0; i<modules.keySet().size()-1; i++){
-            for(int j =i+1; j<modules.keySet().size();j++){
+        for( int i = 0; i<modules.keySet().size()+ sizeIncrease -1; i++){
+            for(int j =i+1; j<modules.keySet().size() + sizeIncrease;j++){
+                if(!modules.containsKey(i) || !modules.containsKey(j)){
+                    continue;
+                }
                 ModuleComparison comparisonLine = new ModuleComparison(modules.get(i),i,modules.get(j),j);
                 int numOfDifferences = 0;
                 ArrayList<String> differentHeadings = new ArrayList();
@@ -30,8 +33,8 @@ public class MMDDistanceBuilder {
         }
 
 //Finds nearest module(s)
-        ArrayList<ArrayList> nearestComparisons = new ArrayList();
-        for(int j = 0; j<modules.keySet().size(); j++){
+        HashMap<Integer,ArrayList<ModuleComparison> > nearestComparisons = new HashMap();
+        for(int j = 0; j<modules.keySet().size() + sizeIncrease; j++){
             HashMap<String,String> emptyModule = new HashMap();
             ModuleComparison leastDifferenceComparison = new ModuleComparison(emptyModule,-1,emptyModule,-1);
             leastDifferenceComparison.differences=999;
@@ -53,7 +56,7 @@ public class MMDDistanceBuilder {
                 }
 
             }
-            nearestComparisons.add(nearestNeighbors);
+            nearestComparisons.put(j,nearestNeighbors);
             System.out.println(leastDifferenceComparison.module1Index + " " + leastDifferenceComparison.module2Index + ": " + leastDifferenceComparison.differences);
         }
         return nearestComparisons;
