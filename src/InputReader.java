@@ -65,7 +65,7 @@ public class InputReader {
             if(line.startsWith("METRIC") || line.startsWith("XMLTAG")){
                 try{
                     String[] lineContents = line.split("\\s+");
-                    if(lineContents.length != 2){
+                    if(lineContents.length != 2 || lineContents[1].equals("METRIC") || lineContents[1].equals("XMLTAG")){
                         throw new ArrayStoreException("GENERAL ERROR: INVALID XMLTAG or METRIC input");
                     }
                     if(lineContents[0].equals("METRIC")){
