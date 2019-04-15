@@ -7,6 +7,9 @@ public class MMDmain {
         HashMap<Integer, HashMap<String,String>> modules = reader.parseDma();
         MMDDistanceBuilder distanceBuilder = new MMDDistanceBuilder();
         HashMap<Integer,ArrayList<ModuleComparison>> nearestComparisons = distanceBuilder.calculateDistance(modules,reader.normalHeaders,0);
+        String identifier = reader.findIdentifier();
+        System.out.println(identifier);
+
         //has to be done here to fix the global 'modules' hashmap
         int removedCount = 0;
         for(int i = 0; i < nearestComparisons.size(); i++){
