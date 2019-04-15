@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class InputReader {
+    InputFmtChecker fmtChecker = new InputFmtChecker();
     int headersCount = 0;
     ArrayList<String> metricHeaders = new ArrayList();
     ArrayList<String> xmlTagHeaders = new ArrayList();
@@ -92,6 +93,7 @@ public class InputReader {
             i++;
         }
         checkType2(normalHeaders);
+
         return headers;
     }
 
@@ -106,6 +108,8 @@ public class InputReader {
             }
             modules.put(i,module);
         }
+        fmtChecker.checkAllInput(modules, metricHeaders, xmlTagHeaders);
+        fmtChecker.checkMultiplicity(normalHeaders);
         return modules;
     }
 
@@ -113,6 +117,28 @@ public class InputReader {
         if (normalHeaders.contains("TYPE2") && !normalHeaders.contains("TYPE")){
             throw new ArrayStoreException("GENERAL ERROR: INVALID XMLTAG or METRIC input");
         }
+    }
+
+    public String findIdentifier(){
+        if (normalHeaders.contains("XMI_ID")){
+            return "XMI_ID";
+        }
+        else if(normalHeaders.contains("TEST_NUMBER")){
+            return "TEST_NUMBER";
+        }
+        else if(normalHeaders.contains("NAME")){
+            return "NAME";
+        }
+        else if(normalHeaders.contains("ID")){
+            return "ID";
+        }
+        else if(normalHeaders.contains("CLONE_ID")){
+            return "CLONE_ID";
+        }
+        else if(normalHeaders.contains("DMA_ID")){
+            return "DMA_ID";
+        }
+        throw new IllegalArgumentException("GENERAL ERROR: NO IDENTIFIER");
     }
 }
 
