@@ -16,9 +16,12 @@ public class MMDmain {
             for(int j = 0; j<nearestComparisons.get(i).size(); j++){
                 ModuleComparison comparison = nearestComparisons.get(i).get(j);
                 if (comparison.differences == 0){
-                    modules.remove(comparison.module2Index);
+
                     HashMap<String,String> cloneModule = modules.get(comparison.module1Index);
-                    cloneModule.put("MetricClone", "True");
+                    cloneModule.put("Module1",comparison.module1.get(identifier));
+                    cloneModule.put("Module2",comparison.module2.get(identifier));
+                    cloneModule.put("MetricID", "MetricClone" + removedCount);
+                    modules.remove(comparison.module2Index);
                     modules.replace(comparison.module1Index,comparison.module1,cloneModule);
                     removedCount++;
                 }
@@ -41,6 +44,8 @@ public class MMDmain {
             }
             System.out.println(modules.get(i).get("NAME"));
         }
+        XMLGen genXml = new XMLGen();
+        genXml.generateXML(modules,fixedNearestComparisons,removedCount,identifier);
 
 
 
