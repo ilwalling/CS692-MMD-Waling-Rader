@@ -45,7 +45,7 @@ public class MMDmain {
             System.out.println(modules.get(i).get("NAME"));
         }
         XMLGen genXml = new XMLGen();
-        genXml.generateXML(modules,fixedNearestComparisons,removedCount,identifier);
+        genXml.generateXML(modules,fixedNearestComparisons,removedCount,identifier,reader.normalHeaders,reader.metricHeaders,reader.xmlTagHeaders);
 
 
 

@@ -15,7 +15,8 @@ import java.util.HashMap;
 
 public class XMLGen {
     public static final String xmlFilePath = "test/TestInput001/Output/xmlOut.xml";
-    public static void generateXML(HashMap<Integer,HashMap<String,String>> modules,  HashMap<Integer, ArrayList<ModuleComparison>> fixedNearestComparisons, Integer removedCount, String identifier){
+    public static void generateXML(HashMap<Integer,HashMap<String,String>> modules,  HashMap<Integer, ArrayList<ModuleComparison>> fixedNearestComparisons, Integer removedCount, String identifier,
+                                   ArrayList<String> normalHeaders, ArrayList<String>metricHeaders, ArrayList<String>xmlTagHeaders){
     try{
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = docFactory.newDocumentBuilder();
@@ -42,21 +43,26 @@ public class XMLGen {
                 cloneData.appendChild(cloneProcess);
                 cloneGroup.appendChild(cloneData);
 
-                Element cloneModule = document.createElement("clone_module");
-                Element moduleID = document.createElement("module_id");
-                Element idElement = document.createElement(identifier.toLowerCase());
-                idElement.appendChild(document.createTextNode(modules.get(i).get("Module1")));
-                moduleID.appendChild(idElement);
-                cloneModule.appendChild(moduleID);
-
-                Element cloneModule2 = document.createElement("clone_module");
-                Element moduleID2 = document.createElement("module_id");
-                Element idElement2 = document.createElement(identifier.toLowerCase());
-                idElement2.appendChild(document.createTextNode(modules.get(i).get("Module2")));
-                moduleID2.appendChild(idElement2);
-                cloneModule2.appendChild(moduleID2);
-                cloneGroup.appendChild(cloneModule);
-                cloneGroup.appendChild(cloneModule2);
+                for(int j = 1; j<3; j++){
+                    Element cloneModule = document.createElement("clone_module");
+                    Element moduleID = document.createElement("module_id");
+                    Element idElement = document.createElement(identifier.toLowerCase());
+                    String moduleOrder = "Module" + j;
+                    idElement.appendChild(document.createTextNode(modules.get(i).get(moduleOrder)));
+                    moduleID.appendChild(idElement);
+                    cloneModule.appendChild(moduleID);
+                    Element moduleProcessData = document.createElement("module_process_data");
+                    for (String header : normalHeaders) {
+                        if(header.toLowerCase().equals(identifier.toLowerCase()) || header.toLowerCase().equals("metricclone")){
+                            continue;
+                        }
+                        Element processDataHeader = document.createElement(header.toLowerCase());
+                        processDataHeader.appendChild(document.createTextNode(modules.get(i).get(header)));
+                        moduleProcessData.appendChild(processDataHeader);
+                    }
+                    cloneModule.appendChild(moduleProcessData);
+                    cloneGroup.appendChild(cloneModule);
+                }
 
                 ArrayList<ModuleComparison> comparisons = fixedNearestComparisons.get(i);
                 Element distanceConnections = document.createElement("distance_connections");
@@ -76,8 +82,17 @@ public class XMLGen {
                 idElement.appendChild(document.createTextNode(modules.get(i).get(identifier)));
                 moduleID.appendChild(idElement);
                 module.appendChild(moduleID);
-                Element processData = document.createElement("process_data");
-                module.appendChild(processData);
+                Element moduleProcessData = document.createElement("module_process_data");
+                for (String header : normalHeaders) {
+                    if(header.toLowerCase().equals(identifier.toLowerCase()) || header.toLowerCase().equals("metricclone")){
+                        continue;
+                    }
+                    Element processDataHeader = document.createElement(header.toLowerCase());
+                    processDataHeader.appendChild(document.createTextNode(modules.get(i).get(header)));
+                    moduleProcessData.appendChild(processDataHeader);
+                }
+
+                module.appendChild(moduleProcessData);
                 ArrayList<ModuleComparison> comparisons = fixedNearestComparisons.get(i);
                 Element distanceConnections = document.createElement("distance_connections");
                 for(int k = 0; k<comparisons.size(); k++){
@@ -99,21 +114,23 @@ public class XMLGen {
                 connection.appendChild(connectionID);
                 Element listMetrics = document.createElement("list_of_metrics");
                 for (String diffMetric:fixedNearestComparisons.get(i).get(j).differentMetrics) {
-                    Element metric = document.createElement("metric");
-                    Element metricName = document.createElement("metric_name");
-                    metricName.appendChild(document.createTextNode(diffMetric));
-                    metric.appendChild(metricName);
-                    Element metric1Val = document.createElement("value");
-                    metric1Val.setAttribute("module", fixedNearestComparisons.get(i).get(j).module1.get(identifier));
-                    metric1Val.appendChild(document.createTextNode(fixedNearestComparisons.get(i).get(j).module1.get(diffMetric)));
+                    if(normalHeaders.contains(diffMetric) || xmlTagHeaders.contains(diffMetric) || metricHeaders.contains(diffMetric)){
+                        Element metric = document.createElement("metric");
+                        Element metricName = document.createElement("metric_name");
+                        metricName.appendChild(document.createTextNode(diffMetric));
+                        metric.appendChild(metricName);
+                        Element metric1Val = document.createElement("value");
+                        metric1Val.setAttribute("module", fixedNearestComparisons.get(i).get(j).module1.get(identifier));
+                        metric1Val.appendChild(document.createTextNode(fixedNearestComparisons.get(i).get(j).module1.get(diffMetric)));
 
-                    Element metric1Val2 = document.createElement("value");
-                    metric1Val2.setAttribute("module", fixedNearestComparisons.get(i).get(j).module2.get(identifier));
-                    metric1Val2.appendChild(document.createTextNode(fixedNearestComparisons.get(i).get(j).module2.get(diffMetric)));
+                        Element metric1Val2 = document.createElement("value");
+                        metric1Val2.setAttribute("module", fixedNearestComparisons.get(i).get(j).module2.get(identifier));
+                        metric1Val2.appendChild(document.createTextNode(fixedNearestComparisons.get(i).get(j).module2.get(diffMetric)));
 
-                    metric.appendChild(metric1Val);
-                    metric.appendChild(metric1Val2);
-                    listMetrics.appendChild(metric);
+                        metric.appendChild(metric1Val);
+                        metric.appendChild(metric1Val2);
+                        listMetrics.appendChild(metric);
+                    }
                 }
                 connection.appendChild(listMetrics);
                 rootMMD.appendChild(connection);
