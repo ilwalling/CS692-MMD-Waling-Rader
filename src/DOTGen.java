@@ -32,7 +32,18 @@ public class DOTGen {
                 }
                 if(modules.get(i).keySet().contains("MetricID")){
                     tempLineString += modules.get(i).get("MetricID");
-                    tempLineString += "[shape= circle]";
+                    tempLineString += "[shape= circle";
+                    if (modules.get(i).containsKey("CloneVuln")){
+                        String color = "";
+                        if(Integer.valueOf(modules.get(i).get("CloneVuln")) == 1){
+                            tempLineString += ", style = filled, fillcolor = yellow";
+                        }
+                        else if(Integer.valueOf(modules.get(i).get("CloneVuln")) > 1){
+                            tempLineString += ", style = filled, fillcolor = red";
+                        }
+                    }
+                    tempLineString += "]";
+
                 }
                 else {
                     tempLineString += modules.get(i).get(identifier);
@@ -64,9 +75,21 @@ public class DOTGen {
                     else{
                         tempLineString += currentComparison.module2.get("MetricID");
                     }
+                    String diffHeaders = "";
+                    for(int counter = 0; counter<currentComparison.differentMetrics.size();counter++){
+                        if(normalHeaders.contains(currentComparison.differentMetrics.get(counter))||
+                        metricHeaders.contains(currentComparison.differentMetrics.get(counter)) ||
+                        xmlTagHeaders.contains(currentComparison.differentMetrics.get(counter))){
+                            if(diffHeaders.equals("")){
+                                diffHeaders += currentComparison.differentMetrics.get(counter);
+                            }else{
+                                diffHeaders += " ," + currentComparison.differentMetrics.get(counter);
+                            }
 
-                    String listString = String.join(" ,", currentComparison.differentMetrics);
-                    tempLineString += "[label = " + listString + "];";
+
+                        }
+                    }
+                    tempLineString += "[label = " + diffHeaders + "];";
 
                     if(!lines.contains(tempLineString)){
                         lines.add(tempLineString);

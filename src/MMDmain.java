@@ -21,6 +21,10 @@ public class MMDmain {
                     cloneModule.put("Module1",comparison.module1.get(identifier));
                     cloneModule.put("Module2",comparison.module2.get(identifier));
                     cloneModule.put("MetricID", "MetricClone" + removedCount);
+                    if(reader.normalHeaders.contains("VULNERABILITY")){
+                        cloneModule.put("CloneVuln",String.valueOf(Integer.valueOf(comparison.module1.get("VULNERABILITY")) + Integer.valueOf(comparison.module2.get("VULNERABILITY"))));
+                        System.out.println(cloneModule.get("CloneVuln"));
+                    }
                     modules.remove(comparison.module2Index);
                     modules.replace(comparison.module1Index,comparison.module1,cloneModule);
                     removedCount++;

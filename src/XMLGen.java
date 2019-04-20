@@ -38,6 +38,24 @@ public class XMLGen {
                 Element cloneCount = document.createElement("count_of_clone_group");
                 cloneCount.appendChild(document.createTextNode("2"));
                 Element cloneProcess = document.createElement("clone_group_process_data");
+                if(modules.get(i).containsKey("CloneVuln")){
+                    int cloneVulnerability = Integer.valueOf(modules.get(i).get("CloneVuln"));
+                    if(cloneVulnerability != 0){
+                        Element cloneVulnStatus = document.createElement("clone_group_vulnerability_status");
+                        Element cloneVulncategory = document.createElement("clone_group_vulnerability_category");
+                        if(cloneVulnerability == 1){
+                            cloneVulnStatus.appendChild(document.createTextNode("MIXED"));
+                            cloneVulncategory.appendChild(document.createTextNode("MIXED"));
+                        }
+                        else if(cloneVulnerability > 1) {
+                            cloneVulnStatus.appendChild(document.createTextNode("VULNERABLE"));
+                            cloneVulncategory.appendChild(document.createTextNode("VULNERABLE"));
+                        }
+                        cloneProcess.appendChild(cloneVulnStatus);
+                        cloneProcess.appendChild(cloneVulncategory);
+                    }
+                }
+
                 cloneData.appendChild(cloneId);
                 cloneData.appendChild(cloneCount);
                 cloneData.appendChild(cloneProcess);
