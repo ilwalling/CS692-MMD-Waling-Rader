@@ -46,10 +46,8 @@ public class MMDmain {
         }
         XMLGen genXml = new XMLGen();
         genXml.generateXML(modules,fixedNearestComparisons,removedCount,identifier,reader.normalHeaders,reader.metricHeaders,reader.xmlTagHeaders);
-
-
-
-
+        DOTGen dotGen = new DOTGen();
+        dotGen.generateDOT(modules,fixedNearestComparisons,removedCount,identifier,reader.normalHeaders,reader.metricHeaders,reader.xmlTagHeaders);
 
     }
 }

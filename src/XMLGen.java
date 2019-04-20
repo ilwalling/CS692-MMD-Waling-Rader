@@ -120,11 +120,21 @@ public class XMLGen {
                         metricName.appendChild(document.createTextNode(diffMetric));
                         metric.appendChild(metricName);
                         Element metric1Val = document.createElement("value");
-                        metric1Val.setAttribute("module", fixedNearestComparisons.get(i).get(j).module1.get(identifier));
+                        if(!fixedNearestComparisons.get(i).get(j).module1.containsKey("MetricID")){
+                            metric1Val.setAttribute("module", fixedNearestComparisons.get(i).get(j).module1.get(identifier));
+                        }
+                        else{
+                            metric1Val.setAttribute("module", fixedNearestComparisons.get(i).get(j).module1.get("MetricID"));
+                        }
                         metric1Val.appendChild(document.createTextNode(fixedNearestComparisons.get(i).get(j).module1.get(diffMetric)));
 
                         Element metric1Val2 = document.createElement("value");
-                        metric1Val2.setAttribute("module", fixedNearestComparisons.get(i).get(j).module2.get(identifier));
+                        if(!fixedNearestComparisons.get(i).get(j).module2.containsKey("MetricID")){
+                            metric1Val2.setAttribute("module", fixedNearestComparisons.get(i).get(j).module2.get(identifier));
+                        }
+                        else{
+                            metric1Val2.setAttribute("module", fixedNearestComparisons.get(i).get(j).module2.get("MetricID"));
+                        }
                         metric1Val2.appendChild(document.createTextNode(fixedNearestComparisons.get(i).get(j).module2.get(diffMetric)));
 
                         metric.appendChild(metric1Val);
