@@ -97,8 +97,8 @@ public class DOTGen {
                 }
             }
             lines.add("}");
-
             Files.write(pathDotFilePath, lines, Charset.forName("UTF-8"));
+            System.out.println("Done printing .dot file");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

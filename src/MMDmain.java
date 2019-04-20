@@ -8,7 +8,6 @@ public class MMDmain {
         MMDDistanceBuilder distanceBuilder = new MMDDistanceBuilder();
         HashMap<Integer,ArrayList<ModuleComparison>> nearestComparisons = distanceBuilder.calculateDistance(modules,reader.normalHeaders,0);
         String identifier = reader.findIdentifier();
-        System.out.println(identifier);
 
         //has to be done here to fix the global 'modules' hashmap
         int removedCount = 0;
@@ -23,7 +22,6 @@ public class MMDmain {
                     cloneModule.put("MetricID", "MetricClone" + removedCount);
                     if(reader.normalHeaders.contains("VULNERABILITY")){
                         cloneModule.put("CloneVuln",String.valueOf(Integer.valueOf(comparison.module1.get("VULNERABILITY")) + Integer.valueOf(comparison.module2.get("VULNERABILITY"))));
-                        System.out.println(cloneModule.get("CloneVuln"));
                     }
                     modules.remove(comparison.module2Index);
                     modules.replace(comparison.module1Index,comparison.module1,cloneModule);
@@ -33,20 +31,16 @@ public class MMDmain {
         }
         ArrayList<String> updatedHeaders = reader.normalHeaders;
         updatedHeaders.add("MetricClone");
-        System.out.println("NEW");
         HashMap<Integer,ArrayList<ModuleComparison>> fixedNearestComparisons = distanceBuilder.calculateDistance(modules,updatedHeaders, removedCount);
-        System.out.println("FIXED");
         for(int i = 0; i < fixedNearestComparisons.size(); i++){
             for(int j = 0; j<fixedNearestComparisons.get(i).size(); j++){
                 ModuleComparison comparison = fixedNearestComparisons.get(i).get(j);
-                System.out.println(comparison.module1Index + " " + comparison.module2Index + " :" +comparison.differences);
             }
         }
         for(int i = 0; i < modules.size()+removedCount; i++){
             if(!modules.keySet().contains(i)){
                 continue;
             }
-            System.out.println(modules.get(i).get("NAME"));
         }
         XMLGen genXml = new XMLGen();
         genXml.generateXML(modules,fixedNearestComparisons,removedCount,identifier,reader.normalHeaders,reader.metricHeaders,reader.xmlTagHeaders);

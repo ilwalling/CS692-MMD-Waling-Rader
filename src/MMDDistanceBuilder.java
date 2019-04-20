@@ -24,11 +24,6 @@ public class MMDDistanceBuilder {
                 comparisonLine.differences = numOfDifferences;
                 comparisonLine.differentMetrics = differentHeadings;
                 differenceList.add(comparisonLine);
-
-
-//                System.out.println("New Comparison");
-//                System.out.println(i + " " + j);
-//               System.out.println(comparisonLine.differences);
             }
         }
 
@@ -57,7 +52,6 @@ public class MMDDistanceBuilder {
 
             }
             nearestComparisons.put(j,nearestNeighbors);
-            System.out.println(leastDifferenceComparison.module1Index + " " + leastDifferenceComparison.module2Index + ": " + leastDifferenceComparison.differences);
         }
         return nearestComparisons;
     }

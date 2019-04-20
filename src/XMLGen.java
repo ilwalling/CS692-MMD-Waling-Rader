@@ -25,6 +25,9 @@ public class XMLGen {
         //root element
         Element rootMMD = document.createElement("mmd");
         document.appendChild(rootMMD);
+        Element fileNameElement = document.createElement("filename");
+        fileNameElement.appendChild(document.createTextNode("ADD FILENAME HERE"));
+        rootMMD.appendChild(fileNameElement);
         for(int i = 0; i<modules.keySet().size()+ removedCount;i++){
             if(!modules.keySet().contains(i)){
                 continue;
