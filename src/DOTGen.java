@@ -36,7 +36,13 @@ public class DOTGen {
                 }
                 else {
                     tempLineString += modules.get(i).get(identifier);
-                    tempLineString += "[shape= box]";
+                    tempLineString += "[shape= box";
+                    if(modules.get(i).keySet().contains("VULNERABILITY")){
+                        if(Integer.valueOf(modules.get(i).get("VULNERABILITY")) != 0){
+                            tempLineString +=", style = filled, fillcolor = red";
+                        }
+                    }
+                    tempLineString += "]";
                 }
                 tempLineString += ";";
                 lines.add(tempLineString);
@@ -59,8 +65,8 @@ public class DOTGen {
                         tempLineString += currentComparison.module2.get("MetricID");
                     }
 
-                    String listString = String.join(", ", currentComparison.differentMetrics);
-                    tempLineString += "[label = " + listString + "]";
+                    String listString = String.join(" ,", currentComparison.differentMetrics);
+                    tempLineString += "[label = " + listString + "];";
 
                     if(!lines.contains(tempLineString)){
                         lines.add(tempLineString);
