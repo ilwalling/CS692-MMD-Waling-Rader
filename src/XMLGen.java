@@ -14,10 +14,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class XMLGen {
-    public static final String xmlFilePath = "test/TestInput001/Output/xmlOut.xml";
-    public static void generateXML(HashMap<Integer,HashMap<String,String>> modules,  HashMap<Integer, ArrayList<ModuleComparison>> fixedNearestComparisons, Integer removedCount, String identifier,
-                                   ArrayList<String> normalHeaders, ArrayList<String>metricHeaders, ArrayList<String>xmlTagHeaders){
+    public String xmlFilePath = "test/TestInput008/Output/xmlOut.xml";
+    public void generateXML(HashMap<Integer,HashMap<String,String>> modules,  HashMap<Integer, ArrayList<ModuleComparison>> fixedNearestComparisons, Integer removedCount, String identifier,
+                                   ArrayList<String> normalHeaders, ArrayList<String>metricHeaders, ArrayList<String>xmlTagHeaders, String outputPath,String filename) throws Exception{
     try{
+        xmlFilePath = outputPath + "xmlOut.xml";
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = docFactory.newDocumentBuilder();
         Document document = documentBuilder.newDocument();
@@ -26,7 +27,7 @@ public class XMLGen {
         Element rootMMD = document.createElement("mmd");
         document.appendChild(rootMMD);
         Element fileNameElement = document.createElement("filename");
-        fileNameElement.appendChild(document.createTextNode("ADD FILENAME HERE"));
+        fileNameElement.appendChild(document.createTextNode(filename));
         rootMMD.appendChild(fileNameElement);
         for(int i = 0; i<modules.keySet().size()+ removedCount;i++){
             if(!modules.keySet().contains(i)){
@@ -176,10 +177,10 @@ public class XMLGen {
         System.out.println("Done creating XML File");
     }
     catch (ParserConfigurationException pce){
-        pce.printStackTrace();
+        throw new Exception("GENERAL ERROR: XML output");
     }
     catch (TransformerException tfe){
-        tfe.printStackTrace();
+        throw new Exception("GENERAL ERROR: XML output");
     }
     }
 }

@@ -17,13 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DOTGen {
-    public static final String dotFilePath = "test/TestInput001/Output/dotOut.dot";
-    public static Path pathDotFilePath = Paths.get("test/TestInput001/Output/dotOut.dot");
-    public static void generateDOT(HashMap<Integer, HashMap<String,String>> modules, HashMap<Integer, ArrayList<ModuleComparison>> fixedNearestComparisons, Integer removedCount, String identifier,
-                                   ArrayList<String> normalHeaders, ArrayList<String>metricHeaders, ArrayList<String>xmlTagHeaders){
+   // public static final String dotFilePath = "test/TestInput008/Output/dotOut.dot";
+
+    public void generateDOT(HashMap<Integer, HashMap<String,String>> modules, HashMap<Integer, ArrayList<ModuleComparison>> fixedNearestComparisons, Integer removedCount, String identifier,
+                                   ArrayList<String> normalHeaders, ArrayList<String>metricHeaders, ArrayList<String>xmlTagHeaders, String outputPath) throws Exception{
         ArrayList<String> lines = new ArrayList();
         try {
-            PrintWriter writer = new PrintWriter(dotFilePath);
+            Path pathDotFilePath = Paths.get(outputPath + "dotOut.dot");
+            //PrintWriter writer = new PrintWriter(dotFilePath);
             lines.add("strict graph G{");
             for(int i = 0; i<modules.keySet().size()+removedCount;i++){
                 String tempLineString = "";
@@ -89,7 +90,7 @@ public class DOTGen {
 
                         }
                     }
-                    tempLineString += "[label = " + diffHeaders + "];";
+                    tempLineString += "[label = \"" + diffHeaders + "\"];";
 
                     if(!lines.contains(tempLineString)){
                         lines.add(tempLineString);
@@ -100,9 +101,9 @@ public class DOTGen {
             Files.write(pathDotFilePath, lines, Charset.forName("UTF-8"));
             System.out.println("Done printing .dot file");
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            throw new Exception("GENERAL ERROR: Output path not found");
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new Exception("GENERAL ERROR: I/O Error");
         }
 
 

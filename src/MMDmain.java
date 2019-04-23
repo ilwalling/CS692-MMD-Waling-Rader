@@ -2,9 +2,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MMDmain {
-    public static void main(String[] args) {
+    public MMDmain(String inputPath,String natesStuff, String outputPath) throws Exception {
         InputReader reader = new InputReader();
-        HashMap<Integer, HashMap<String,String>> modules = reader.parseDma();
+        HashMap<Integer, HashMap<String,String>> modules = reader.parseDma(inputPath);
         MMDDistanceBuilder distanceBuilder = new MMDDistanceBuilder();
         HashMap<Integer,ArrayList<ModuleComparison>> nearestComparisons = distanceBuilder.calculateDistance(modules,reader.normalHeaders,0);
         String identifier = reader.findIdentifier();
@@ -43,9 +43,9 @@ public class MMDmain {
             }
         }
         XMLGen genXml = new XMLGen();
-        genXml.generateXML(modules,fixedNearestComparisons,removedCount,identifier,reader.normalHeaders,reader.metricHeaders,reader.xmlTagHeaders);
+        genXml.generateXML(modules,fixedNearestComparisons,removedCount,identifier,reader.normalHeaders,reader.metricHeaders,reader.xmlTagHeaders, outputPath, reader.fileName);
         DOTGen dotGen = new DOTGen();
-        dotGen.generateDOT(modules,fixedNearestComparisons,removedCount,identifier,reader.normalHeaders,reader.metricHeaders,reader.xmlTagHeaders);
+        dotGen.generateDOT(modules,fixedNearestComparisons,removedCount,identifier,reader.normalHeaders,reader.metricHeaders,reader.xmlTagHeaders, outputPath);
 
     }
 }
