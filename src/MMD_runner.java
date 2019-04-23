@@ -39,12 +39,20 @@ public class MMD_runner {
 
         int passedTests = 0;
         int failedTests = 0;
+        int skippedTests = 0;
 
         System.out.println("");
         for(File f : listOfFiles) {
             System.out.println("####################################################################");
             System.out.println("Running test " + f.getName());
             try {
+                File skip = new File(f.toString() +"/output/skip.txt");
+                if(skip.exists()){
+                    skippedTests++;
+                    continue;
+                }
+
+
                 MMDmain mmd = new MMDmain(f.toString() + "/input/", f.getName(),f.toString()+"/output/" );
 
 
@@ -110,6 +118,6 @@ public class MMD_runner {
 
         }
 
-        System.out.println("TOTAL PASSED: \033[32m" + passedTests +"\033[0m Total Failed: \033[31m" + failedTests + " \033[0m");
+        System.out.println("TOTAL PASSED: \033[32m" + passedTests +"\033[0m Total Failed: \033[31m" + failedTests + " \033[0m Total Skipped: \033[33m" + skippedTests + "\33[0m ");
     }
 }
